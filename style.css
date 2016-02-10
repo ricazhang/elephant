@@ -5,3 +5,11 @@ html, body {
 #map { 
 	height: 90%; 
 }
+
+#title {
+	text-align: center;
+	font-size: 4vw;
+	font-family: Helvetica;
+	font-weight: 300;
+	margin-top: 4px;
+}
