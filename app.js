@@ -3,7 +3,28 @@
 var map;
 var elephantNames = [];
 var lines = {};
-var elephants = {};
+var eleInfo = {};
+var elephantLocations = {};
+
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+};
+
+/* get lat long distance formula http://www.movable-type.co.uk/scripts/latlong.html */
+function getDistance(lat1, lon1, lat2, lon2) {
+    var R = 6371000; // metres
+    var phi1 = toRadians(lat1);
+    var phi2 = toRadians(lat2);
+    var deltaPhi = toRadians(lat2 - lat1);
+    var deltaLambda = toRadians(lon2 - lon1);
+
+    var a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
+            Math.cos(phi1) * Math.cos(phi2) *
+            Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+    return d / 100; // km
+}
 
 /* color generator source: http://stackoverflow.com/questions/1484506/random-color-generator-in-javascript */
 function getRandomColor() {
@@ -34,20 +55,20 @@ function loadElephantData() {
                 var name = jsonObject["name"];
                 if (elephantNames.indexOf(name) < 0) {
                     elephantNames.push(name);
-                    elephants[name] = new Array();
+                    elephantLocations[name] = new Array();
                 }
                 var eleObject = {
                     "timestamp": new Date(jsonObject["timestamp"]),
                     "lat": parseFloat(jsonObject["x"]),
                     "lng": parseFloat(jsonObject["y"])
                 };
-                elephants[name].push(eleObject);
+                elephantLocations[name].push(eleObject);
             });
             for (var i in elephantNames) {
             	$('<div>').attr({
             		id: elephantNames[i],
             	}).appendTo('#elephant-names');
-                
+
             	$('<input>').attr({
 				    type: 'checkbox',
 				    id: elephantNames[i] + "-input",
@@ -71,6 +92,16 @@ function loadElephantData() {
 			    	id: elephantNames[i] + "-label",
 			    	text: elephantNames[i]
 				}).appendTo('#' + elephantNames[i]);
+
+                // calculate distance
+                var locations = elephantLocations[elephantNames[i]];
+                var totalDistance = 0;
+                for (var j = 0; j < locations.length - 1; j++) {
+                    var dist = getDistance(locations[j]["lat"], locations[j]["lng"], locations[j + 1]["lat"], locations[j + 1]["lng"]);
+                    totalDistance += dist;
+                }
+
+                $('#' + elephantNames[i] + "-label").append('<span class="distance"> walked ' + totalDistance.toFixed(2) + ' km</span>');
             }
         })
         .fail(function( jqxhr, textStatus, error ) {
@@ -90,9 +121,9 @@ function initMap() {
 
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
         // do something only the first time the map is loaded
-        for (var eleName in elephants) {
+        for (var eleName in elephantLocations) {
             var line = new google.maps.Polyline({
-                path: elephants[eleName],
+                path: elephantLocations[eleName],
                 geodesic: true,
                 strokeColor: getRandomColor(),
                 strokeOpacity: 1.0,
@@ -116,7 +147,7 @@ function animateCircle(line) {
     }, 20);
 }
 $(function() {
-	$('#select-all-elephants').click(function(e) {
+	$('#select-all-elephantLocations').click(function(e) {
 		e.preventDefault();
 		$('.elephant-name-checkbox').each(function() {
 			if($(this).is(":not(:checked)")) {
@@ -124,7 +155,7 @@ $(function() {
 		    }
 		})
 	});
-	$('#deselect-all-elephants').click(function(e) {
+	$('#deselect-all-elephantLocations').click(function(e) {
 		e.preventDefault();
 		$('.elephant-name-checkbox').each(function() {
 			if($(this).is(":checked")) {
