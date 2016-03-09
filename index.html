@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Elephants of Gabon</title>
-    <meta name="description" content="">
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <div id="map"></div>
-    <p id="title">Elephants of Gabon</p>
-    <script src="app.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdoBCI9VrvRtDSWZSXQ0TQR67B-PhFCuE&callback=initMap">
-    </script>
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <title>Elephants of Gabon</title>
+        <meta name="description" content="">
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <div id="controls">
+            <form id="elephant-names">
+                <p>Elephant Path</p>
+                <button class="elephant-path-button" id="select-all-elephants">Select All Elephants</button>
+                <button class="elephant-path-button" id="deselect-all-elephants">Deselect All Elephants</button>
+            </form>
+        </div>
+
+        <p id="title">Elephants of Gabon</p>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdoBCI9VrvRtDSWZSXQ0TQR67B-PhFCuE&callback=initMap"></script>
+
+        <script src="app.js"></script>
+    </body>
 </html>
