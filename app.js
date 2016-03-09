@@ -36,18 +36,6 @@ function getRandomColor() {
     return color;
 }
 
-/* sort by attribute source http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript */
-function compare(a,b) {
-  if (a["timestamp"] < b["timestamp"])
-    return -1;
-  else if (a.last_nom > b.last_nom)
-    return 1;
-  else 
-    return 0;
-}
-
-//objs.sort(compare);
-
 function loadElephantData() {
     $.getJSON("locations.json")
         .then(function(json) {
@@ -136,18 +124,8 @@ function initMap() {
 
 }
 
-function animateCircle(line) {
-    var count = 0;
-    window.setInterval(function() {
-        count = (count + 1) % 200;
-
-        var icons = line.get('icons');
-        icons[0].offset = (count / 2) + '%';
-        line.set('icons', icons);
-    }, 20);
-}
 $(function() {
-	$('#select-all-elephantLocations').click(function(e) {
+	$('#select-all-elephants').click(function(e) {
 		e.preventDefault();
 		$('.elephant-name-checkbox').each(function() {
 			if($(this).is(":not(:checked)")) {
@@ -155,7 +133,7 @@ $(function() {
 		    }
 		})
 	});
-	$('#deselect-all-elephantLocations').click(function(e) {
+	$('#deselect-all-elephants').click(function(e) {
 		e.preventDefault();
 		$('.elephant-name-checkbox').each(function() {
 			if($(this).is(":checked")) {
