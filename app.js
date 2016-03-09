@@ -1,10 +1,8 @@
 'use strict';
 
 var map;
-var elephantNames = [];
 var lines = {};
-var eleInfo = {};
-var elephantLocations = {};
+var elephantLocations = {}; // {name: [locations], name: [locations]}
 
 function toRadians(degrees) {
     return degrees * Math.PI / 180;
@@ -41,8 +39,7 @@ function loadElephantData() {
         .then(function(json) {
             $.each(json, function(index, jsonObject) {
                 var name = jsonObject["name"];
-                if (elephantNames.indexOf(name) < 0) {
-                    elephantNames.push(name);
+                if (!(name in elephantLocations)) {
                     elephantLocations[name] = new Array();
                 }
                 var eleObject = {
@@ -52,20 +49,20 @@ function loadElephantData() {
                 };
                 elephantLocations[name].push(eleObject);
             });
-            for (var i in elephantNames) {
+            for (var name in elephantLocations) {
             	$('<div>').attr({
-            		id: elephantNames[i],
+            		id: name,
             	}).appendTo('#elephant-names');
 
             	$('<input>').attr({
 				    type: 'checkbox',
-				    id: elephantNames[i] + "-input",
-				    name: elephantNames[i],
+				    id: name + "-input",
+				    name: name,
 				    class: "elephant-name-checkbox",
 				    checked: true
-				}).appendTo('#' + elephantNames[i]);
+				}).appendTo('#' + name);
 
-				$('#' + elephantNames[i] + "-input").click(function() {
+				$('#' + name + "-input").click(function() {
 					if($(this).is(":not(:checked)")) {
 				        lines[this.name].setMap(null);
 				    }
@@ -74,24 +71,23 @@ function loadElephantData() {
 				    }
 				})
 
-				var label = $("<label>").text(elephantNames[i]);
+				var label = $("<label>").text(name);
 				label.attr({
-				    for: elephantNames[i] + "-input",
-			    	id: elephantNames[i] + "-label",
-			    	text: elephantNames[i]
-				}).appendTo('#' + elephantNames[i]);
+				    for: name + "-input",
+			    	id: name + "-label",
+			    	text: name
+				}).appendTo('#' + name);
 
                 // calculate distance
-                var locations = elephantLocations[elephantNames[i]];
-                console.log(elephantNames[i]);
-                console.log(locations);
+                var locations = elephantLocations[name];
+                //console.log(locations);
                 var totalDistance = 0;
                 for (var j = 0; j < locations.length - 1; j++) {
                     var dist = getDistance(locations[j]["lat"], locations[j]["lng"], locations[j + 1]["lat"], locations[j + 1]["lng"]);
                     totalDistance += dist;
                 }
 
-                $('#' + elephantNames[i] + "-label").append('<span class="distance"> walked ' + totalDistance.toFixed(2) + ' km</span>');
+                $('#' + name + "-label").append('<span class="distance"> walked ' + totalDistance.toFixed(2) + ' km</span>');
             }
         })
         .fail(function( jqxhr, textStatus, error ) {
