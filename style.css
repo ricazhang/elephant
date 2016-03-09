@@ -48,10 +48,6 @@ form#elephant-names div {
 	border: 1px solid white;
 }
 
-form#elephant-names div:hover {
-	border: 1px solid black;
-}
-
 form#elephant-names div input {
 	cursor: pointer;
 }
@@ -62,5 +58,9 @@ form#elephant-names div label {
 	margin-bottom: 4px;
 	margin-left: 6px;
 	vertical-align: middle;
+}
+
+form#elephant-names div:hover label {
+	border-bottom: 1px dotted black;
 }
 

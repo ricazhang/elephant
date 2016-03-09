@@ -47,6 +47,7 @@ function loadElephantData() {
             	$('<div>').attr({
             		id: elephantNames[i],
             	}).appendTo('#elephant-names');
+                
             	$('<input>').attr({
 				    type: 'checkbox',
 				    id: elephantNames[i] + "-input",
