@@ -15,8 +15,8 @@ with open('Mar03LatLong.csv') as ele_data:
         count += 1
         ele_dict = {"name": line[0],
                     "timestamp": line[4],
-                    "x": line[5],
-                    "y": line[6]}
+                    "x": line[6],
+                    "y": line[5]}
         print ele_dict
         locations.insert(ele_dict)
 
