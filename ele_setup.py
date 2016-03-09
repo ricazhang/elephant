@@ -9,18 +9,16 @@ locations = db.locations
 print "database name: " + db.name
 count = 0
  
-with open('ele_latlong.csv') as ele_data:
+with open('Mar03LatLong.csv') as ele_data:
     reader = csv.reader(ele_data)
     for line in reader:
         count += 1
-        ele_dict = {"name": line[0], 
-                    "timestamp": line[2], 
-                    "x": line[3], 
-                    "y": line[4]}
+        ele_dict = {"name": line[0],
+                    "timestamp": line[4],
+                    "x": line[5],
+                    "y": line[6]}
         print ele_dict
-        #print line
         locations.insert(ele_dict)
-        #continue
 
 print "number of lines read: " + str(count) #checks number of lines of file read through (should be about 22,440)
 print("done")

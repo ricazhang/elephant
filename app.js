@@ -37,7 +37,7 @@ function getRandomColor() {
 }
 
 function loadElephantData() {
-    $.getJSON("locations.json")
+    $.getJSON("full-locations.json")
         .then(function(json) {
             $.each(json, function(index, jsonObject) {
                 var name = jsonObject["name"];
