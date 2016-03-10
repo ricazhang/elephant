@@ -1,0 +1,72 @@
+html, body { 
+	height: 100%; 
+	margin: 0; 
+	padding: 0; 
+	font-family: Helvetica;
+}
+      
+#map { 
+	height: calc(90% - 1em); 
+	width: 70%;
+	margin-left: 1em;
+	display: inline-block;
+}
+
+#title {
+	text-align: center;
+	font-size: 3vw;
+	font-weight: 300;
+	margin-top: 9px;
+	margin-bottom: 9px;
+}
+
+#controls {
+	left: 70%;
+	width: 25%;
+	height: calc(90% - 1em);
+	display: inline-block;
+	vertical-align: top;
+	overflow-y: auto;
+}
+
+button {
+	font-family: inherit;
+	font-size: 12px;
+	padding: 5px;
+}
+
+form {
+	padding: 1em;
+}
+
+form#elephant-names .elephant-path-button {
+	margin-bottom: 1em;
+}
+
+form#elephant-names div {
+	display: block;
+	margin-top: 6px;
+	border: 1px solid white;
+}
+
+form#elephant-names div input {
+	cursor: pointer;
+}
+
+form#elephant-names div label {
+	cursor: pointer;
+	margin-top: -1px;
+	margin-bottom: 4px;
+	margin-left: 6px;
+	vertical-align: middle;
+}
+
+form#elephant-names div:hover label {
+	border-bottom: 1px dotted black;
+}
+
+form#elephant-names div label .distance {
+	color: #d3d3d3;
+	font-weight: 200;
+}
+
