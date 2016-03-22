@@ -1,5 +1,52 @@
 'use strict';
 
+function getParameterByName(name) {
+    var url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function redirectToOAuth() {
+    var MYCLIENTID = "elephant";
+    var MYREDIRECTURL = "http://ricazhang.github.io/elephant/";
+    var scope = "identity:netid:read";
+    
+    var url = "https://oauth.oit.duke.edu/oauth/authorize.php";//Double check if that's right
+    url += "?response_type=token";
+    url += "&client_id=" + encodeURIComponent(MYCLIENTID);
+    url += "&redirect_uri=" + encodeURIComponent(MYREDIRECTURL);
+    url += "&scope=" + encodeURIComponent(scope);
+    url += "&state=" + encodeURIComponent(Math.random() + 1);
+    //redirect the user to the login location
+    window.location = url;
+}
+    
+function checkToken() {
+    console.log("Checking token");
+    var token = getParameterByName('access_token');
+    //if we don't have a token yet...
+    if (!token) {
+        console.log("We don't have a token.");
+        redirectToOAuth();
+    } else {
+        /*we have a token. Let's do a simple (insecure) check to check validity. 
+        The server will also need to do a check because this one can be forged by the client, 
+        but this one can be used to get the client's netid at least.*/
+        console.log("We have a token.");
+        var req = new XMLHttpRequest();
+        req.open('GET','https://oauth.oit.duke.edu/oauth/resource.php');
+        req.addEventListener('load',function(result) {
+            console.log(result.target.response);//modify stuff here
+        });
+        req.send();
+        return true;
+    }
+}
+
 var map;
 var lines = {};
 var elephantLocations = {}; // {name: [locations], name: [locations]}
@@ -96,7 +143,9 @@ function loadElephantData() {
         });
 }
 
-loadElephantData();
+if (checkToken()) {
+    loadElephantData();
+}
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {

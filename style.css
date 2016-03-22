@@ -29,6 +29,12 @@ html, body {
 	overflow-y: auto;
 }
 
+input#slider {
+	width: 100%;
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
 button {
 	font-family: inherit;
 	font-size: 12px;
