@@ -1,4 +1,26 @@
 'use strict';
+function setAccessToken() {
+    console.log(window.location.pathname);
+    if (window.location.pathname === "/#access_token") {
+        console.log(window.location.pathname);
+        console.log(window.location.search);
+        var hash = window.location.search.substr(1);
+        var splitted = hash.split('&');
+        var params = {};
+          
+        for (var i = 0; i < splitted.length; i++) {
+          var param  = splitted[i].split('=');
+          var key    = param[0];
+          var value  = param[1];
+          params[key] = value;
+        }
+        console.log(params["access_token"]);
+        localStorage.setItem("access_token", params["access_token"]);
+        window.location.pathname = "/";
+    }
+}
+
+setAccessToken();
 
 function getParameterByName(name) {
     var url = window.location.href;
@@ -22,11 +44,15 @@ function redirectToOAuth() {
     url += "&scope=" + encodeURIComponent(scope);
     url += "&state=" + encodeURIComponent(Math.random() + 1);
     //redirect the user to the login location
-    window.location = url;
+    //window.location = url;
+    setTimeout(function() {
+        window.location = url;
+    }, 2000);
 }
     
 function checkToken() {
     console.log("Checking token");
+    setAccessToken();
     var token = getParameterByName('access_token');
     //if we don't have a token yet...
     if (!token) {
