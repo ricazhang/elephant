@@ -56,6 +56,7 @@ function checkToken() {
             localStorage.setItem("netid", json["netid"]);
         });
         req.send(params);
+        return true;
     }
 }
 
@@ -157,6 +158,7 @@ function loadElephantData() {
 
 if (checkToken()) {
     loadElephantData();
+    initMap();
 }
 
 function initMap() {
