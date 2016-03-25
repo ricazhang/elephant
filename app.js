@@ -56,7 +56,6 @@ function checkToken() {
             localStorage.setItem("netid", json["netid"]);
         });
         req.send(params);
-        window.location.pathname = "/elephant";
     }
 }
 
