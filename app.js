@@ -25,7 +25,7 @@ setAccessToken();
 function getParameterByName(name) {
     var url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    var regex = new RegExp("[#&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
     if (!results) return null;
     if (!results[2]) return '';
@@ -52,8 +52,10 @@ function redirectToOAuth() {
     
 function checkToken() {
     console.log("Checking token");
-    setAccessToken();
+    //setAccessToken();
     var token = getParameterByName('access_token');
+    console.log(token);
+    localStorage.setItem("access_token", token);
     //if we don't have a token yet...
     if (!token) {
         console.log("We don't have a token.");
