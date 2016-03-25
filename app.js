@@ -42,7 +42,7 @@ function checkToken() {
         but this one can be used to get the client's netid at least.*/
         console.log("We have a token.");
         var TOKEN = localStorage.getItem("access_token");
-        var MYCLIENTID = "attendance-taker";
+        var MYCLIENTID = "elephant";
         
         var req = new XMLHttpRequest();
         var params = "access_token=" + localStorage.getItem("access_token");
@@ -56,6 +56,7 @@ function checkToken() {
             localStorage.setItem("netid", json["netid"]);
         });
         req.send(params);
+        window.location.pathname = "/";
     }
 }
 
