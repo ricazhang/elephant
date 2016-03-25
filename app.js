@@ -1,26 +1,4 @@
 'use strict';
-function setAccessToken() {
-    console.log(window.location.pathname);
-    if (window.location.pathname === "/#access_token") {
-        console.log(window.location.pathname);
-        console.log(window.location.search);
-        var hash = window.location.search.substr(1);
-        var splitted = hash.split('&');
-        var params = {};
-          
-        for (var i = 0; i < splitted.length; i++) {
-          var param  = splitted[i].split('=');
-          var key    = param[0];
-          var value  = param[1];
-          params[key] = value;
-        }
-        console.log(params["access_token"]);
-        localStorage.setItem("access_token", params["access_token"]);
-        window.location.pathname = "/";
-    }
-}
-
-setAccessToken();
 
 function getParameterByName(name) {
     var url = window.location.href;
@@ -44,34 +22,40 @@ function redirectToOAuth() {
     url += "&scope=" + encodeURIComponent(scope);
     url += "&state=" + encodeURIComponent(Math.random() + 1);
     //redirect the user to the login location
-    //window.location = url;
-    setTimeout(function() {
-        window.location = url;
-    }, 2000);
+    window.location = url;
 }
     
 function checkToken() {
     console.log("Checking token");
-    //setAccessToken();
     var token = getParameterByName('access_token');
     console.log(token);
     localStorage.setItem("access_token", token);
-    //if we don't have a token yet...
+
     if (!token) {
+        //if we don't have a token yet...
         console.log("We don't have a token.");
         redirectToOAuth();
-    } else {
+    }
+    else {
         /*we have a token. Let's do a simple (insecure) check to check validity. 
         The server will also need to do a check because this one can be forged by the client, 
         but this one can be used to get the client's netid at least.*/
         console.log("We have a token.");
+        var TOKEN = localStorage.getItem("access_token");
+        var MYCLIENTID = "attendance-taker";
+        
         var req = new XMLHttpRequest();
-        req.open('GET','https://oauth.oit.duke.edu/oauth/resource.php');
+        var params = "access_token=" + localStorage.getItem("access_token");
+        req.open('GET','https://api.colab.duke.edu/identity/v1/');
+        req.setRequestHeader('Authorization','Bearer ' + TOKEN);
+        req.setRequestHeader("x-api-key", MYCLIENTID);
+
         req.addEventListener('load',function(result) {
-            console.log(result.target.response);//modify stuff here
+            var json = JSON.parse(result.target.response);
+            console.log("NET ID: " + json["netid"]);
+            localStorage.setItem("netid", json["netid"]);
         });
-        req.send();
-        return true;
+        req.send(params);
     }
 }
 
