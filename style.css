@@ -21,6 +21,7 @@ html, body {
 }
 
 #controls {
+    padding-left: 1em;
 	left: 70%;
 	width: 25%;
 	height: calc(90% - 1em);
@@ -29,10 +30,14 @@ html, body {
 	overflow-y: auto;
 }
 
-input#slider {
-	width: 100%;
+div#slider-range {
 	margin-left: 1em;
 	margin-right: 1em;
+}
+
+div#date-info {
+    margin: 1em;
+    font-size: 12px;
 }
 
 button {
@@ -42,7 +47,8 @@ button {
 }
 
 form {
-	padding: 1em;
+	padding-left: 1em;
+    padding-right: 1em;
 }
 
 form#elephant-names .elephant-path-button {

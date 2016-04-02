@@ -1,68 +1,7 @@
-'use strict';
-
-function getParameterByName(name) {
-    var url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[#&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
-
-function redirectToOAuth() {
-    var MYCLIENTID = "elephant";
-    var MYREDIRECTURL = "http://ricazhang.github.io/elephant/";
-    var scope = "identity:netid:read";
-    
-    var url = "https://oauth.oit.duke.edu/oauth/authorize.php";//Double check if that's right
-    url += "?response_type=token";
-    url += "&client_id=" + encodeURIComponent(MYCLIENTID);
-    url += "&redirect_uri=" + encodeURIComponent(MYREDIRECTURL);
-    url += "&scope=" + encodeURIComponent(scope);
-    url += "&state=" + encodeURIComponent(Math.random() + 1);
-    //redirect the user to the login location
-    window.location = url;
-}
-    
-function checkToken() {
-    console.log("Checking token");
-    var token = getParameterByName('access_token');
-    console.log(token);
-    localStorage.setItem("access_token", token);
-
-    if (!token) {
-        //if we don't have a token yet...
-        console.log("We don't have a token.");
-        redirectToOAuth();
-    }
-    else {
-        /*we have a token. Let's do a simple (insecure) check to check validity. 
-        The server will also need to do a check because this one can be forged by the client, 
-        but this one can be used to get the client's netid at least.*/
-        console.log("We have a token.");
-        var TOKEN = localStorage.getItem("access_token");
-        var MYCLIENTID = "elephant";
-        
-        var req = new XMLHttpRequest();
-        var params = "access_token=" + localStorage.getItem("access_token");
-        req.open('GET','https://api.colab.duke.edu/identity/v1/');
-        req.setRequestHeader('Authorization','Bearer ' + TOKEN);
-        req.setRequestHeader("x-api-key", MYCLIENTID);
-
-        req.addEventListener('load',function(result) {
-            var json = JSON.parse(result.target.response);
-            console.log("NET ID: " + json["netid"]);
-            localStorage.setItem("netid", json["netid"]);
-        });
-        req.send(params);
-        return true;
-    }
-}
-
 var map;
 var lines = {};
 var elephantLocations = {}; // {name: [locations], name: [locations]}
+var timestamps = [];
 
 function toRadians(degrees) {
     return degrees * Math.PI / 180;
@@ -94,22 +33,62 @@ function getRandomColor() {
     return color;
 }
 
+function formatDate(date) {
+    var dateString = date.toLocaleDateString();
+    var timeString = date.toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
+    return dateString + " " + timeString;
+}
+
 function loadElephantData() {
     $.getJSON("full-locations.json")
         .then(function(json) {
             $.each(json, function(index, jsonObject) {
                 var name = jsonObject["name"];
+                var timestamp = new Date(jsonObject["timestamp"]);
                 if (!(name in elephantLocations)) {
                     elephantLocations[name] = new Array();
                 }
+                if (!($.inArray(timestamp, timestamps) > -1)) {
+                    timestamps.push(timestamp);
+                }
+
                 var eleObject = {
-                    "timestamp": new Date(jsonObject["timestamp"]),
+                    "timestamp": timestamp,
                     "lat": parseFloat(jsonObject["x"]),
                     "lng": parseFloat(jsonObject["y"])
                 };
+                
                 elephantLocations[name].push(eleObject);
             });
+                        
+            $('#slider-range').slider({
+                range: true,
+                min: 0,
+                max: timestamps.length - 1,
+                values: [0, timestamps.length - 1],
+                slide: function(event, ui) {
+                    console.log(timestamps[ui.values[0]]);
+                    $('#start-date').html(formatDate( timestamps[ui.values[0]] ));
+                    $('#end-date').html(formatDate( timestamps[ui.values[1]]) );
+                }
+            });
+            $('#start-date').html(formatDate(timestamps[0]));
+            $('#end-date').html(formatDate(timestamps[timestamps.length - 1]));
+            
+            //elephantLocationsTimeFilter = elephantLocations;
+            $('#slider-range').slider("option", "max", timestamps.length);
+            
             for (var name in elephantLocations) {
+                elephantLocations[name].sort(function(a, b) {
+                    if (a.timestamp > b.timestamp){
+                        return 1;
+                    } else if (a.timestamp < b.timestamp){
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+                
             	$('<div>').attr({
             		id: name,
             	}).appendTo('#elephant-names');
@@ -156,11 +135,6 @@ function loadElephantData() {
         });
 }
 
-if (checkToken()) {
-    loadElephantData();
-    initMap();
-}
-
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: -0.5170211, lng: 9.525267},
@@ -176,16 +150,69 @@ function initMap() {
                 geodesic: true,
                 strokeColor: getRandomColor(),
                 strokeOpacity: 1.0,
-                strokeWeight: 2
+                strokeWeight: 2,
+                map: map
             })
             lines[eleName] = line;
-            line.setMap(map);
         }
     });
 
 }
 
+function clearMap() {
+    for (var name in lines) {
+        lines[name].setMap(null);
+    }
+    lines = {};
+}
+
+/* doesn't work */
+function playMap() {
+    clearMap();
+    console.log("About to play map");
+    
+    for (var eleName in elephantLocations) {
+        var line = new google.maps.Polyline({
+            path: elephantLocations[eleName].slice(0, 10),
+            geodesic: true,
+            strokeColor: getRandomColor(),
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            map: map
+        })
+        lines[eleName] = line;
+        
+        var points = elephantLocations[eleName].length;
+        var step = 10;
+                
+        for (var i= 10; i < points; i++) {
+            // using a closure to preserve i
+            (function(i) {
+                setTimeout(function() {
+                    var currPath = lines[eleName].getPath();
+                    var latlong = new google.maps.LatLng(
+                        elephantLocations[eleName].slice(i, i+1)['lat'], 
+                        elephantLocations[eleName].slice(i, i+1)['lng']
+                    );
+                    currPath.push(latlong);
+                    lines[eleName].setPath(currPath);
+                }, 500 * i);
+            }(i));
+        }
+    }
+}
+
+$('#play-map').click(function(e) {
+    e.preventDefault();
+    playMap();
+});
+
 $(function() {
+    if (checkToken()) {
+        loadElephantData();
+        initMap();
+    }
+    
 	$('#select-all-elephants').click(function(e) {
 		e.preventDefault();
 		$('.elephant-name-checkbox').each(function() {
@@ -201,5 +228,5 @@ $(function() {
 				$(this).trigger("click");
 		    }
 		})
-	})
-})
+	});
+});
