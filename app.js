@@ -129,7 +129,7 @@ function loadElephantData() {
                     totalDistance += dist;
                 }
 
-                $('#' + name + "-label").append('<span class="distance"> walked ' + totalDistance.toFixed(2) + ' km</span>');
+                $('#' + name + "-label").append('<span class="distance" id="' + name + '-distance"> walked ' + totalDistance.toFixed(2) + ' km</span>');
             }
         })
         .fail(function( jqxhr, textStatus, error ) {
@@ -237,6 +237,16 @@ function redrawMap(leftVal, rightVal) {
             map: map
         })
         lines[eleName] = line;
+        
+        // calculate distance
+        var locations = elephantLocations[eleName].slice(leftIndex, rightIndex);
+        var totalDistance = 0;
+        for (var j = 0; j < locations.length - 1; j++) {
+            var dist = getDistance(locations[j]["lat"], locations[j]["lng"], locations[j + 1]["lat"], locations[j + 1]["lng"]);
+            totalDistance += dist;
+        }
+
+        $('#' + eleName + "-distance").html(" " + totalDistance.toFixed(2) + ' km</span>');
     }
 }
 
