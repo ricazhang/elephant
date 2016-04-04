@@ -61,6 +61,16 @@ function loadElephantData() {
                 
                 elephantLocations[name].push(eleObject);
             });
+            
+            timestamps = timestamps.sort(function(a, b) {
+                if (a.getTime() > b.getTime()){
+                    return 1;
+                } else if (a.getTime() < b.getTime()){
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
                         
             $('#slider-range').slider({
                 range: true,
@@ -82,10 +92,10 @@ function loadElephantData() {
             $('#slider-range').slider("option", "max", timestamps.length);
             
             for (var name in elephantLocations) {
-                elephantLocations[name].sort(function(a, b) {
-                    if (a.timestamp > b.timestamp){
+                elephantLocations[name] = elephantLocations[name].sort(function(a, b) {
+                    if (a.timestamp.getTime() > b.timestamp.getTime()){
                         return 1;
-                    } else if (a.timestamp < b.timestamp){
+                    } else if (a.timestamp.getTime() < b.timestamp.getTime()){
                         return -1;
                     } else {
                         return 0;
@@ -170,39 +180,11 @@ function clearMap() {
     lines = {};
 }
 
-/* doesn't work */
 function playMap() {
-    clearMap();
-    console.log("About to play map");
-    
-    for (var eleName in elephantLocations) {
-        var line = new google.maps.Polyline({
-            path: elephantLocations[eleName].slice(0, 10),
-            geodesic: true,
-            strokeColor: colors[eleName],
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-            map: map
-        })
-        lines[eleName] = line;
-        
-        var points = elephantLocations[eleName].length;
-        var step = 10;
-                
-        for (var i= 10; i < points; i++) {
-            // using a closure to preserve i
-            (function(i) {
-                setTimeout(function() {
-                    var currPath = lines[eleName].getPath();
-                    var latlong = new google.maps.LatLng(
-                        elephantLocations[eleName].slice(i, i+1)['lat'], 
-                        elephantLocations[eleName].slice(i, i+1)['lng']
-                    );
-                    currPath.push(latlong);
-                    lines[eleName].setPath(currPath);
-                }, 500 * i);
-            }(i));
-        }
+    for (var i = 0; i < timestamps.length; i+=200) {
+        (function(i) {
+            setTimeout(redrawMap(0, i), 10 * i);
+        }(i));
     }
 }
 
@@ -210,7 +192,6 @@ function redrawMap(leftVal, rightVal) {
     clearMap();
     var leftDate = new Date(timestamps[leftVal]);
     var rightDate = new Date(timestamps[rightVal]);
-    console.log(leftDate);
     console.log(rightDate);
     for (var eleName in elephantLocations) {
         // only redraw if checked
@@ -219,17 +200,15 @@ function redrawMap(leftVal, rightVal) {
             var rightIndex = 0;
             for (var i = 0; i < elephantLocations[eleName].length; i++) {
                 var currDate = new Date(elephantLocations[eleName][i]["timestamp"]);
-                if (currDate < leftDate) {
+                if (currDate.getTime() < leftDate.getTime()) {
                     leftIndex = i;
                 }
-                if (currDate < rightDate) {
+                if (currDate.getTime() < rightDate.getTime()) {
                     rightIndex = i;
                 }
             }
             leftIndex += 1;
-            console.log("left: " + leftIndex + " right: " + rightIndex);
-            console.log(elephantLocations[eleName][leftIndex]["timestamp"]);
-            console.log(elephantLocations[eleName][rightIndex]["timestamp"]);
+            //console.log("left: " + leftIndex + " right: " + rightIndex);
             var line = new google.maps.Polyline({
                 path: elephantLocations[eleName].slice(leftIndex, rightIndex),
                 geodesic: true,
@@ -247,10 +226,8 @@ function redrawMap(leftVal, rightVal) {
                 var dist = getDistance(locations[j]["lat"], locations[j]["lng"], locations[j + 1]["lat"], locations[j + 1]["lng"]);
                 totalDistance += dist;
             }
-
             $('#' + eleName + "-distance").html(" " + totalDistance.toFixed(2) + ' km</span>');
         }
-
     }
 }
 

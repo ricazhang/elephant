@@ -11,7 +11,7 @@ var getParameterByName = function(name) {
 }
 
 var redirectToOAuth = function() {
-    var MYCLIENTID = "elephant";
+    var MYCLIENTID = "elephants-of-gabon";
     var MYREDIRECTURL = "http://ricazhang.github.io/elephant/";
     if (window.location.href.indexOf("localhost:8000") > 0) {
         MYREDIRECTURL = "http://localhost:8000";
@@ -38,7 +38,7 @@ var checkToken = function() {
         //if we don't have a token yet...
         console.log("We don't have a token.");
         redirectToOAuth();
-        //return true;
+        return true;
     }
     else {
         /*we have a token. Let's do a simple (insecure) check to check validity. 
