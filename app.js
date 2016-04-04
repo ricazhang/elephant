@@ -182,9 +182,7 @@ function clearMap() {
 
 function playMap() {
     for (var i = 0; i < timestamps.length; i+=200) {
-        (function(i) {
-            setTimeout(redrawMap(0, i), 10 * i);
-        }(i));
+        setTimeout(function(x) { return redrawMap(0, i); }(i), 1000*i);
     }
 }
 
