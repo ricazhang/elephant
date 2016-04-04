@@ -213,40 +213,44 @@ function redrawMap(leftVal, rightVal) {
     console.log(leftDate);
     console.log(rightDate);
     for (var eleName in elephantLocations) {
-        var leftIndex = 0;
-        var rightIndex = 0;
-        for (var i = 0; i < elephantLocations[eleName].length; i++) {
-            var currDate = new Date(elephantLocations[eleName][i]["timestamp"]);
-            if (currDate < leftDate) {
-                leftIndex = i;
+        // only redraw if checked
+        if ($('#' + eleName + "-input:checked").length > 0) {
+            var leftIndex = 0;
+            var rightIndex = 0;
+            for (var i = 0; i < elephantLocations[eleName].length; i++) {
+                var currDate = new Date(elephantLocations[eleName][i]["timestamp"]);
+                if (currDate < leftDate) {
+                    leftIndex = i;
+                }
+                if (currDate < rightDate) {
+                    rightIndex = i;
+                }
             }
-            if (currDate < rightDate) {
-                rightIndex = i;
+            leftIndex += 1;
+            console.log("left: " + leftIndex + " right: " + rightIndex);
+            console.log(elephantLocations[eleName][leftIndex]["timestamp"]);
+            console.log(elephantLocations[eleName][rightIndex]["timestamp"]);
+            var line = new google.maps.Polyline({
+                path: elephantLocations[eleName].slice(leftIndex, rightIndex),
+                geodesic: true,
+                strokeColor: colors[eleName],
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+                map: map
+            })
+            lines[eleName] = line;
+            
+            // calculate distance
+            var locations = elephantLocations[eleName].slice(leftIndex, rightIndex);
+            var totalDistance = 0;
+            for (var j = 0; j < locations.length - 1; j++) {
+                var dist = getDistance(locations[j]["lat"], locations[j]["lng"], locations[j + 1]["lat"], locations[j + 1]["lng"]);
+                totalDistance += dist;
             }
-        }
-        leftIndex += 1;
-        console.log("left: " + leftIndex + " right: " + rightIndex);
-        console.log(elephantLocations[eleName][leftIndex]["timestamp"]);
-        console.log(elephantLocations[eleName][rightIndex]["timestamp"]);
-        var line = new google.maps.Polyline({
-            path: elephantLocations[eleName].slice(leftIndex, rightIndex),
-            geodesic: true,
-            strokeColor: colors[eleName],
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-            map: map
-        })
-        lines[eleName] = line;
-        
-        // calculate distance
-        var locations = elephantLocations[eleName].slice(leftIndex, rightIndex);
-        var totalDistance = 0;
-        for (var j = 0; j < locations.length - 1; j++) {
-            var dist = getDistance(locations[j]["lat"], locations[j]["lng"], locations[j + 1]["lat"], locations[j + 1]["lng"]);
-            totalDistance += dist;
+
+            $('#' + eleName + "-distance").html(" " + totalDistance.toFixed(2) + ' km</span>');
         }
 
-        $('#' + eleName + "-distance").html(" " + totalDistance.toFixed(2) + ' km</span>');
     }
 }
 
