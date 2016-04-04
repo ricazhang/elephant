@@ -2,6 +2,7 @@ var map;
 var lines = {};
 var elephantLocations = {}; // {name: [locations], name: [locations]}
 var timestamps = [];
+var colors = {}; // {name: color, name: color}
 
 function toRadians(degrees) {
     return degrees * Math.PI / 180;
@@ -67,9 +68,11 @@ function loadElephantData() {
                 max: timestamps.length - 1,
                 values: [0, timestamps.length - 1],
                 slide: function(event, ui) {
-                    console.log(timestamps[ui.values[0]]);
                     $('#start-date').html(formatDate( timestamps[ui.values[0]] ));
                     $('#end-date').html(formatDate( timestamps[ui.values[1]]) );
+                },
+                change: function(event, ui) {
+                    redrawMap(ui.values[0], ui.values[1]);
                 }
             });
             $('#start-date').html(formatDate(timestamps[0]));
@@ -145,10 +148,11 @@ function initMap() {
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
         // do something only the first time the map is loaded
         for (var eleName in elephantLocations) {
+            colors[eleName] = getRandomColor();
             var line = new google.maps.Polyline({
                 path: elephantLocations[eleName],
                 geodesic: true,
-                strokeColor: getRandomColor(),
+                strokeColor: colors[eleName],
                 strokeOpacity: 1.0,
                 strokeWeight: 2,
                 map: map
@@ -175,7 +179,7 @@ function playMap() {
         var line = new google.maps.Polyline({
             path: elephantLocations[eleName].slice(0, 10),
             geodesic: true,
-            strokeColor: getRandomColor(),
+            strokeColor: colors[eleName],
             strokeOpacity: 1.0,
             strokeWeight: 2,
             map: map
@@ -199,6 +203,40 @@ function playMap() {
                 }, 500 * i);
             }(i));
         }
+    }
+}
+
+function redrawMap(leftVal, rightVal) {
+    clearMap();
+    var leftDate = new Date(timestamps[leftVal]);
+    var rightDate = new Date(timestamps[rightVal]);
+    console.log(leftDate);
+    console.log(rightDate);
+    for (var eleName in elephantLocations) {
+        var leftIndex = 0;
+        var rightIndex = 0;
+        for (var i = 0; i < elephantLocations[eleName].length; i++) {
+            var currDate = new Date(elephantLocations[eleName][i]["timestamp"]);
+            if (currDate < leftDate) {
+                leftIndex = i;
+            }
+            if (currDate < rightDate) {
+                rightIndex = i;
+            }
+        }
+        leftIndex += 1;
+        console.log("left: " + leftIndex + " right: " + rightIndex);
+        console.log(elephantLocations[eleName][leftIndex]["timestamp"]);
+        console.log(elephantLocations[eleName][rightIndex]["timestamp"]);
+        var line = new google.maps.Polyline({
+            path: elephantLocations[eleName].slice(leftIndex, rightIndex),
+            geodesic: true,
+            strokeColor: colors[eleName],
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+            map: map
+        })
+        lines[eleName] = line;
     }
 }
 

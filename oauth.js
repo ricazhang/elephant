@@ -25,7 +25,7 @@ var redirectToOAuth = function() {
     url += "&scope=" + encodeURIComponent(scope);
     url += "&state=" + encodeURIComponent(Math.random() + 1);
     //redirect the user to the login location
-    //window.location = url;
+    window.location = url;
 }
     
 var checkToken = function() {
@@ -38,7 +38,7 @@ var checkToken = function() {
         //if we don't have a token yet...
         console.log("We don't have a token.");
         redirectToOAuth();
-        return true;
+        //return true;
     }
     else {
         /*we have a token. Let's do a simple (insecure) check to check validity. 
