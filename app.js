@@ -255,26 +255,26 @@ $('#play-map').click(function(e) {
     playMap();
 });
 
+$('#select-all-elephants').click(function(e) {
+    e.preventDefault();
+    $('.elephant-name-checkbox').each(function() {
+        if($(this).is(":not(:checked)")) {
+            $(this).trigger("click");
+        }
+    })
+});
+$('#deselect-all-elephants').click(function(e) {
+    e.preventDefault();
+    $('.elephant-name-checkbox').each(function() {
+        if($(this).is(":checked")) {
+            $(this).trigger("click");
+        }
+    })
+});
+
 $(function() {
     if (checkToken()) {
         loadElephantData();
         initMap();
     }
-    
-	$('#select-all-elephants').click(function(e) {
-		e.preventDefault();
-		$('.elephant-name-checkbox').each(function() {
-			if($(this).is(":not(:checked)")) {
-				$(this).trigger("click");
-		    }
-		})
-	});
-	$('#deselect-all-elephants').click(function(e) {
-		e.preventDefault();
-		$('.elephant-name-checkbox').each(function() {
-			if($(this).is(":checked")) {
-				$(this).trigger("click");
-		    }
-		})
-	});
 });
