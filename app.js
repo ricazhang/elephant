@@ -268,4 +268,11 @@ $(function() {
         loadElephantData();
         initMap();
     }
+    else {
+        var url = "http://ricazhang.github.io/elephant/login.html";
+        if (window.location.href.indexOf("localhost:8000") > 0) {
+            url = "http://localhost:8000/login.html";
+        }    
+        window.location = url;
+    }
 });

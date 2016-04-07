@@ -10,6 +10,23 @@ var getParameterByName = function(name) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+var redirectToGoogleOAuth = function() {
+    var RESPONSE_TYPE = "token";
+    var CLIENT_ID = "362606552631-rqiisqh9qhjitejvp0c97vhoumeqehn6.apps.googleusercontent.com";
+    var REDIRECT_URI = "http://ricazhang.github.io/elephant";
+    var SCOPE = "email profile";
+    var STATE = "/"
+    
+    var url = "https://accounts.google.com/o/oauth2/v2/auth?";
+    url += "&response_type=" + encodeURIComponent(RESPONSE_TYPE);
+    url += "&client_id=" + encodeURIComponent(CLIENT_ID);
+    url += "&redirect_uri=" + encodeURIComponent(REDIRECT_URI);
+    url += "&scope=" + encodeURIComponent(SCOPE);
+    //url += "&state=" + encodeURIComponent(STATE);
+    //https://accounts.google.com/o/oauth2/v2/auth?response_type=token&client_id=elephants-of-gabon&redirect_uri=http://ricazhang.github.io/elephant&scope=email%20profile&
+    window.location = url;
+}
+
 var redirectToOAuth = function() {
     var MYCLIENTID = "elephants-of-gabon";
     var MYREDIRECTURL = "http://ricazhang.github.io/elephant/";
@@ -37,8 +54,13 @@ var checkToken = function() {
     if (!token) {
         //if we don't have a token yet...
         console.log("We don't have a token.");
-        redirectToOAuth();
-        return true;
+        //redirectToOAuth();
+        //return true;
+        var url = "http://ricazhang.github.io/elephant/login.html";
+        if (window.location.href.indexOf("localhost:8000") > 0) {
+            url = "http://localhost:8000/login.html";
+        }    
+        window.location = url;
     }
     else {
         /*we have a token. Let's do a simple (insecure) check to check validity. 
