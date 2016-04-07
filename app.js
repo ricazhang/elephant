@@ -181,8 +181,20 @@ function clearMap() {
 }
 
 function playMap() {
-    for (var i = 0; i < timestamps.length; i+=200) {
-        setTimeout(function(x) { return redrawMap(0, i); }(i), 1000*i);
+    $('#play-map').prop("disabled", true);
+    var playSpeed = $('#play-map-speed').val();
+    playSpeed = parseInt(playSpeed);
+    playRecursive(0, playSpeed);
+}
+
+function playRecursive(counter, playSpeed) {
+    if (counter < timestamps.length){
+        redrawMap(0, counter);
+        counter += 200;
+        setTimeout(function() { playRecursive(counter, playSpeed); }, playSpeed);
+    }
+    else {
+        $('#play-map').prop("disabled", false);
     }
 }
 
@@ -190,7 +202,7 @@ function redrawMap(leftVal, rightVal) {
     clearMap();
     var leftDate = new Date(timestamps[leftVal]);
     var rightDate = new Date(timestamps[rightVal]);
-    console.log(rightDate);
+    //console.log(rightDate);
     for (var eleName in elephantLocations) {
         // only redraw if checked
         if ($('#' + eleName + "-input:checked").length > 0) {

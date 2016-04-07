@@ -13,7 +13,12 @@
         <div id="map"></div>
 
         <div id="controls">
-            <!--<button id="play-map">Play Map</button>-->
+            <select id="play-map-speed">
+                <option value="1000">Slow Speed</option>
+                <option value="500" selected>Medium Speed</option>
+                <option value="100">Fast Speed</option>
+            </select>
+            <button id="play-map">Play Map</button>
             <p class="controls-section-title">Date Range</p>            
             <div id="slider-range"></div>
             <div id="date-info">Showing <span id="start-date"></span> to <span id="end-date"></span></div>

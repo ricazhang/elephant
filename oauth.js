@@ -25,7 +25,7 @@ var redirectToOAuth = function() {
     url += "&scope=" + encodeURIComponent(scope);
     url += "&state=" + encodeURIComponent(Math.random() + 1);
     //redirect the user to the login location
-    window.location = url;
+    //window.location = url;
 }
     
 var checkToken = function() {
