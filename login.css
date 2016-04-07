@@ -1,0 +1,39 @@
+html, body { 
+	height: 100%; 
+	margin: 0; 
+	padding: 0; 
+	font-family: Helvetica;
+}
+
+div#login-container {
+    border: 2px solid lightgray;
+    width: 50%;
+    margin: auto;
+    margin-top: 2em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    text-align: center;
+}
+
+#login-title {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+button {
+	font-family: inherit;
+	font-size: 14px;
+    margin: auto;
+    margin-top: 1em;
+	padding: 5px;
+    display: block;
+}
+
+.button-logo-image {
+    height: 18px;
+    width: auto;
+    vertical-align: middle;
+    padding-right: 1em;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
