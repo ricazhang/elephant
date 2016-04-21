@@ -3,6 +3,7 @@ var lines = {};
 var elephantLocations = {}; // {name: [locations], name: [locations]}
 var timestamps = [];
 var colors = {}; // {name: color, name: color}
+var mostRecentInfoWindow;
 
 function toRadians(degrees) {
     return degrees * Math.PI / 180;
@@ -22,6 +23,35 @@ function getDistance(lat1, lon1, lat2, lon2) {
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     var d = R * c;
     return d / 100; // km
+}
+
+$('#final-location').click(function(e) {
+    e.preventDefault();
+    for (name in elephantLocations) {
+        createMarker(name);
+    }
+})
+
+function createMarker(name) {
+    var lastIndex = elephantLocations[name].length;
+    var infowindow = new google.maps.InfoWindow({
+        content: '<h3>' + name + '</h3>' 
+        + '<p>Location: ' + elephantLocations[name][lastIndex - 1]["lat"] + ", " 
+        + elephantLocations[name][lastIndex - 1]["lng"] + '</p>'
+    });
+    var marker = new google.maps.Marker({
+        position: elephantLocations[name][lastIndex - 1],
+        map: map,
+        title: name,
+        label: name
+    });
+    marker.addListener('click', function() {
+        if (mostRecentInfoWindow) {
+            mostRecentInfoWindow.close();
+        }
+        infowindow.open(map, marker);
+        mostRecentInfoWindow = infowindow;
+    });
 }
 
 /* color generator source: http://stackoverflow.com/questions/1484506/random-color-generator-in-javascript */
