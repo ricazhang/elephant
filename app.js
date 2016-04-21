@@ -4,6 +4,7 @@ var elephantLocations = {}; // {name: [locations], name: [locations]}
 var timestamps = [];
 var colors = {}; // {name: color, name: color}
 var mostRecentInfoWindow;
+var markers = [];
 
 function toRadians(degrees) {
     return degrees * Math.PI / 180;
@@ -27,9 +28,19 @@ function getDistance(lat1, lon1, lat2, lon2) {
 
 $('#final-location').click(function(e) {
     e.preventDefault();
-    for (name in elephantLocations) {
-        createMarker(name);
+    if (markers.length > 0) {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
     }
+    else {
+        for (name in elephantLocations) {
+            createMarker(name);
+        }
+        console.log(markers.length);
+    }
+    
 })
 
 function createMarker(name) {
@@ -45,6 +56,7 @@ function createMarker(name) {
         title: name,
         label: name
     });
+    markers.push(marker);
     marker.addListener('click', function() {
         if (mostRecentInfoWindow) {
             mostRecentInfoWindow.close();
