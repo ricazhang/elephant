@@ -9,7 +9,7 @@ locations = db.locations
 print "database name: " + db.name
 count = 0
  
-with open('Elepts_4.21.16.csv') as ele_data:
+with open('data/Elepts_4.21.16.csv') as ele_data:
     reader = csv.reader(ele_data)
     for line in reader:
         count += 1

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Elephants of Gabon</title>
+        <meta name="description" content="">
+        <link rel="icon" href="images/origami.png">
+        <link rel="stylesheet" href="styles/style.css">
+    </head>
+
+    <body>
+        <input type="file" id="files" name="file" /> Read bytes: 
+        <span class="readBytesButtons">
+          <button data-startbyte="0" data-endbyte="4">1-5</button>
+          <button data-startbyte="5" data-endbyte="14">6-15</button>
+          <button data-startbyte="6" data-endbyte="7">7-8</button>
+          <button>entire file</button>
+        </span>
+        <div id="byte_range"></div>
+        <div id="byte_content"></div>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+        <script src="scripts/upload.js"></script>
+    </body>
+</html>
