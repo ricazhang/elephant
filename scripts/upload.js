@@ -30,6 +30,14 @@ function processData(allText) {
 }
 
 $(document).ready(function() {
+    if (!checkToken()) {
+        var url = "http://ricazhang.github.io/elephant/login.html";
+        if (window.location.href.indexOf("localhost:8000") > 0) {
+            url = "http://localhost:8000/login.html";
+        }    
+        window.location = url;
+    }
+    
     function upload(evt) {
         if (!browserSupportFileUpload()) {
             $('#message').html('The File APIs are not fully supported in this browser!');
