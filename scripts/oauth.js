@@ -51,7 +51,7 @@ var checkToken = function() {
     console.log(token);
     localStorage.setItem("access_token", token);
 
-    if (!token) {
+    if (!localStorage.getItem("access_token")) {
         //if we don't have a token yet...
         console.log("We don't have a token.");
         //redirectToOAuth();
