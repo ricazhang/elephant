@@ -1,0 +1,35 @@
+body {
+    padding-top: 1em;
+}
+div#upload-container {
+    border: 2px solid lightgray;
+    width: 60%;
+    margin: auto;
+    margin-top: 2em;
+    padding: 2em;
+}
+
+div#upload-container h3 {
+    padding-top: 2em;
+    margin: auto;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+th, td {
+    border: 1px solid black;
+    width: 6em;
+    height: 18px;
+	text-align: center;
+}
+
+#read-file-btn {
+	font-family: inherit !important;
+	font-size: 12px !important; 
+	margin-top: 1em;
+	
+	padding: 5px;
+}

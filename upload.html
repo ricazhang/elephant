@@ -6,14 +6,60 @@
         <meta name="description" content="">
         <link rel="icon" href="images/origami.png">
         <link rel="stylesheet" href="styles/style.css">
+        <link rel="stylesheet" href="styles/upload.css">
         
         <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
     </head>
 
     <body>
-        <input id="read-file-btn" type="file" id="files" name="file" accept=".csv"/>
-        <div id="message"></div>
-        <div id="byte_content"></div>
+      <p id="title">Upload Data</p>
+      
+      <div id="upload-container">
+        <a id="return-link" href="index.html">Return to Map</a>
+        <h3>How to Append New Data</h3>
+        <p>Please ensure there are <strong>no headers</strong> in the CSV file. 
+        <p>The data you upload will be <strong>added</strong> to existing data.</p>
+        <p>We will expect the CSV to have seven columns of data. The 
+        first, fourth, fifth, and sixth columns are important and must be in their respective places as such: </p>
+        <table id="data-format-table">
+          <tr>
+            <th>name</th>
+            <th></th> 
+            <th></th> 
+            <th>timestamp</th>
+            <th>x</th> 
+            <th>y</th> 
+            <th></th> 
+          </tr>
+          <tr>
+            <td>Lisa</td>
+            <td>...</td> 
+            <td>...</td>
+            <td>4/17/2016  11:17:00 PM</td>
+            <td>9.454567</td> 
+            <td>-0.428717</td>
+            <td>...</td>
+          </tr>
+          <tr>
+            <td>etc.</td>
+            <td></td> 
+            <td></td>
+            <td></td>
+            <td></td> 
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+        <h3>CSV Upload</h3>
+        
+          <input id="read-file-btn" type="file" id="files" name="file" accept=".csv"/>
+          <div id="message"></div>
+          <div id="byte_content"></div>
+          
+          
+        </div>
+        
+        
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
         
