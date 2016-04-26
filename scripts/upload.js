@@ -7,29 +7,27 @@ function browserSupportFileUpload() {
 }
 
 function processData(allText) {
-    var recordNum = 7;  // or however many elements there are in each row
+    var recordNum = 7;
     var allTextLines = allText.split(/\r\n|\n/);
     var entries = allTextLines[0].split(',');
-    var lines = [];
-    
-    var headings = entries.splice(0, recordNum);
-    while (entries.length > 0) {
-        var tarr = [];
-        var delim = " : ";
-        for (var j = 0; j < recordNum; j++) {
-            tarr.push(headings[j] + delim + entries.shift());
-        }
-        lines.push(tarr);
-    }
+    var count = 0;
+        
+    var myDataRef = new Firebase('https://scorching-inferno-2990.firebaseio.com/');
     
     for (var i = 0; i < allTextLines.length; i++) {
-        lines.push(allTextLines[i].split(','));
+        var row = allTextLines[i].split(',');
+        var obj = {
+            "name": row[0],
+            "timestamp": row[4],
+            "x": row[5],
+            "y": row[6]
+        };
+        myDataRef.push(obj);
+        count++;
     }
     
-    return lines;
-    // alert(lines);
+    return count;
 }
-
 
 $(document).ready(function() {
     function upload(evt) {
@@ -44,16 +42,15 @@ $(document).ready(function() {
             reader.readAsText(file);
             reader.onloadend = function(event) {
                 var csvData = event.target.result;
-                data = processData(csvData);
-                //console.log(csvData);
-                //data = $.csv.toArrays(csvData);
-                if (data && data.length > 0) {
-                    $('#message').html('Imported -' + data.length + '- rows successfully!');
-                    
+                numLines = processData(csvData);
+                if (numLines > 0) {
+                    $('#message').html('Imported -' + numLines + '- rows successfully!');
+                    /*
                     for (var i = 0; i < data.length; i++) {
                         $('#byte_content').append(data[i]);
                         $('#byte_content').append('<br>');
                     }
+                    */
                 } else {
                     $('#message').html('No data to import!');
                 }
