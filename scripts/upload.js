@@ -30,6 +30,7 @@ function processData(allText) {
 }
 
 $(document).ready(function() {
+    /*
     if (!checkToken()) {
         var url = "http://ricazhang.github.io/elephant/login.html";
         if (window.location.href.indexOf("localhost:8000") > 0) {
@@ -37,6 +38,7 @@ $(document).ready(function() {
         }    
         window.location = url;
     }
+    */
     
     function upload(evt) {
         if (!browserSupportFileUpload()) {
