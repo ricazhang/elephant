@@ -82,12 +82,16 @@ function formatDate(date) {
     return dateString + " " + timeString;
 }
 
-function loadElephantData() {
-    $.getJSON("data/full-locations.json")
-        .then(function(json) {
-            $.each(json, function(index, jsonObject) {
-                var name = jsonObject["name"];
-                var timestamp = new Date(jsonObject["timestamp"]);
+function retrieveFirebaseData() {
+    console.log("starting firebase");
+    var myDataRef = new Firebase('https://scorching-inferno-2990.firebaseio.com/');
+    return new Promise(function(resolve, reject) {
+        myDataRef.once("value", function(snapshot) {
+            snapshot.forEach(function(data) {
+                //console.log(data.val().name + " : " + data.val().timestamp);
+                
+                var name = data.val().name;
+                var timestamp = new Date(data.val().timestamp);
                 if (!(name in elephantLocations)) {
                     elephantLocations[name] = new Array();
                 }
@@ -97,13 +101,25 @@ function loadElephantData() {
 
                 var eleObject = {
                     "timestamp": timestamp,
-                    "lat": parseFloat(jsonObject["x"]),
-                    "lng": parseFloat(jsonObject["y"])
+                    "lat": parseFloat(data.val().y),
+                    "lng": parseFloat(data.val().x)
                 };
                 
                 elephantLocations[name].push(eleObject);
             });
             
+            resolve("success");
+        }, function(err) {
+            reject("failed");
+        });
+    });
+}
+
+function loadElephantData() {
+    retrieveFirebaseData()
+        .then(function(response) {
+            console.log(response);
+                        
             timestamps = timestamps.sort(function(a, b) {
                 if (a.getTime() > b.getTime()){
                     return 1;
@@ -183,10 +199,22 @@ function loadElephantData() {
 
                 $('#' + name + "-label").append('<span class="distance" id="' + name + '-distance"> walked ' + totalDistance.toFixed(2) + ' km</span>');
             }
+            
+            for (var eleName in elephantLocations) {
+                colors[eleName] = getRandomColor();
+                var line = new google.maps.Polyline({
+                    path: elephantLocations[eleName],
+                    geodesic: true,
+                    strokeColor: colors[eleName],
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                    map: map
+                })
+                lines[eleName] = line;
+            }
         })
-        .fail(function( jqxhr, textStatus, error ) {
-            var err = textStatus + ", " + error;
-            console.log( "Request Failed: " + err );
+        .catch(function( rejection ) {
+            console.log( rejection );
         });
 }
 
@@ -196,7 +224,7 @@ function initMap() {
         zoom: 11,
         mapTypeId: google.maps.MapTypeId.TERRAIN
     });
-
+    /*
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
         // do something only the first time the map is loaded
         for (var eleName in elephantLocations) {
@@ -212,6 +240,7 @@ function initMap() {
             lines[eleName] = line;
         }
     });
+    */
 
 }
 
@@ -308,7 +337,7 @@ $('#deselect-all-elephants').click(function(e) {
 $(function() {
     if (checkToken()) {
         loadElephantData();
-        initMap();
+        //initMap();
     }
     else {
         var url = "http://ricazhang.github.io/elephant/login.html";
