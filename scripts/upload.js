@@ -11,8 +11,17 @@ function processData(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
     var entries = allTextLines[0].split(',');
     var count = 0;
-        
-    var myDataRef = new Firebase('https://scorching-inferno-2990.firebaseio.com/');
+    
+    var myDataRef = new Firebase('https://scorching-inferno-2990.firebaseio.com/elephantData');
+    
+    myDataRef.authWithCustomToken(localStorage.getItem("access_token"), function(error, result) {
+        if (error) {
+            console.log("Authentication Failed!", error);
+        } else {
+            console.log("Authenticated successfully with payload:", result.auth);
+            console.log("Auth expires at:", new Date(result.expires * 1000));
+        }
+    });
     
     for (var i = 0; i < allTextLines.length; i++) {
         var row = allTextLines[i].split(',');

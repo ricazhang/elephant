@@ -84,7 +84,18 @@ function formatDate(date) {
 
 function retrieveFirebaseData() {
     console.log("starting firebase");
-    var myDataRef = new Firebase('https://scorching-inferno-2990.firebaseio.com/');
+
+    var myDataRef = new Firebase('https://scorching-inferno-2990.firebaseio.com/elephantData');
+    
+    myDataRef.authWithCustomToken(localStorage.getItem("access_token"), function(error, result) {
+    if (error) {
+        console.log("Authentication Failed!", error);
+    } else {
+        console.log("Authenticated successfully with payload:", result.auth);
+        console.log("Auth expires at:", new Date(result.expires * 1000));
+    }
+    });
+    
     return new Promise(function(resolve, reject) {
         myDataRef.once("value", function(snapshot) {
             snapshot.forEach(function(data) {
@@ -110,7 +121,7 @@ function retrieveFirebaseData() {
             
             resolve("success");
         }, function(err) {
-            reject("failed");
+            reject("failed: " + err);
         });
     });
 }
