@@ -14,6 +14,9 @@ var redirectToGoogleOAuth = function() {
     var RESPONSE_TYPE = "token";
     var CLIENT_ID = "362606552631-rqiisqh9qhjitejvp0c97vhoumeqehn6.apps.googleusercontent.com";
     var REDIRECT_URI = "http://ricazhang.github.io/elephant";
+    if (window.location.href.indexOf("localhost:8000") > 0) {
+        REDIRECT_URI = "http://localhost:8000";
+    }
     var SCOPE = "email profile";
     var STATE = "/"
     
@@ -49,7 +52,9 @@ var checkToken = function() {
     console.log("Checking token");
     var token = getParameterByName('access_token');
     console.log(token);
-    localStorage.setItem("access_token", token);
+    if (token) {
+        localStorage.setItem("access_token", token);
+    }
 
     if (!localStorage.getItem("access_token")) {
         //if we don't have a token yet...
