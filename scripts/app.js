@@ -228,6 +228,16 @@ function loadElephantData() {
             }
         })
         .catch(function( rejection ) {
+            $('#background-dim').css("z-index","15");
+		    $('#background-dim').fadeTo(400, .9);
+            $('#message-box').fadeTo(400, 1);
+            $('#message-box').css("z-index","20");
+            var str = "Hello, " + localStorage.getItem("name") + "! Your request to view"
+            + " the web application and elephant location" 
+            + " data has been received. You will be notified when you have access.!"
+            $('#message-box').html(str);
+            //$('#background-dim').attr('display', 'block');
+            //$('#message-box').attr('display', 'block');
             console.log( rejection );
         });
 }

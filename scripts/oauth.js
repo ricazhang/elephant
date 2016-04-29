@@ -14,7 +14,8 @@ function saveUserToFirebase() {
     
     var user = {
         "uid": localStorage.getItem("uid"),
-        "email": localStorage.getItem("email")
+        "email": localStorage.getItem("email"),
+        "name": localStorage.getItem("name")
     }
     
     myDataRef.push(user);
@@ -26,10 +27,12 @@ var redirectToGoogleOAuth = function() {
         if (error) {
             console.log("Login Failed!", error);
         } else {
-            console.log("Authenticated successfully with payload:", authData);
+            //console.log("Authenticated successfully with payload:", authData);
+            //alert(JSON.stringify(authData));
             var token = authData.token;
             var uid = authData.auth.uid;
             var email = authData.google.email;
+            var name = authData.google.displayName;
             console.log(authData.auth);
             if (token) {
                 localStorage.setItem("access_token", token);
@@ -39,6 +42,9 @@ var redirectToGoogleOAuth = function() {
             }
             if (email) {
                 localStorage.setItem("email", email);
+            }
+            if (name) {
+                localStorage.setItem("name", name);
             }
             saveUserToFirebase();
             

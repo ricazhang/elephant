@@ -27,6 +27,28 @@ html, body {
 	margin-bottom: 9px;
 }
 
+#background-dim {
+	background-color: #262626;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 110%;
+    width: 110%;
+    display: block;
+}
+
+#message-box {
+	position: absolute;
+	opacity: 0;
+	background-color: white;
+	top: 25%;
+	left: 30%;
+	width: 30%;
+	display: block;
+	padding: 2em;
+}
+
 #controls {
     padding-left: 1em;
 	left: 70%;
