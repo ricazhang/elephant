@@ -90,6 +90,8 @@ function retrieveFirebaseData() {
     myDataRef.authWithCustomToken(localStorage.getItem("access_token"), function(error, result) {
     if (error) {
         console.log("Authentication Failed!", error);
+        localStorage.clear();
+        checkToken();
     } else {
         console.log("Authenticated successfully with payload:", result.auth);
         console.log("Auth expires at:", new Date(result.expires * 1000));
@@ -127,10 +129,11 @@ function retrieveFirebaseData() {
 }
 
 function loadElephantData() {
+    $('#subtitle').html("Loading Elephant Data...");
     retrieveFirebaseData()
         .then(function(response) {
             console.log(response);
-                        
+            $('#subtitle').html("Please note this app works best with Chrome and Safari.");
             timestamps = timestamps.sort(function(a, b) {
                 if (a.getTime() > b.getTime()){
                     return 1;

@@ -6,7 +6,7 @@ html, body {
 }
       
 #map { 
-	height: calc(90% - 1em); 
+	height: calc(90% - 2em); 
 	width: 70%;
 	margin-left: 1em;
 	display: inline-block;
@@ -17,6 +17,13 @@ html, body {
 	font-size: 3vw;
 	font-weight: 300;
 	margin-top: 9px;
+	margin-bottom: 9px;
+}
+
+#subtitle {
+	text-align: center;
+	font-size: 1vw;
+	font-weight: 400;
 	margin-bottom: 9px;
 }
 
