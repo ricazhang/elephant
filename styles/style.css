@@ -36,6 +36,7 @@ html, body {
     height: 110%;
     width: 110%;
     display: block;
+	z-index: -5;
 }
 
 #message-box {
@@ -47,6 +48,7 @@ html, body {
 	width: 30%;
 	display: block;
 	padding: 2em;
+	z-index: -5;
 }
 
 #controls {
